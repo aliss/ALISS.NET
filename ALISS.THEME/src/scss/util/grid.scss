@@ -1,0 +1,147 @@
+/** @format */
+
+html {
+	background: map-get($brand, aliss-dark-gray);
+}
+
+main {
+	> section {
+		padding: rem-calc(30 0);
+		@include media('>=tablet') {
+			padding: rem-calc(50 0);
+		}
+	}
+}
+
+// Standard grid
+.aliss-grid {
+	display: block;
+	margin: 0 auto;
+	max-width: $global-width;
+	padding: rem-calc(0 15);
+}
+
+// Standard component spacer
+.aliss-content-spacer {
+	&:not(:last-of-type) {
+		margin: rem-calc(0 0 30);
+	}
+}
+
+// Standard flex alignment
+.aliss-content {
+	&__wrap {
+		display: flex;
+		flex-direction: column;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		@include media('>=tablet') {
+			flex-direction: row;
+		}
+	}
+	&__header,
+	&__primary,
+	&__secondary,
+	&__half {
+		flex: 0 1 auto;
+		@include media('<=tablet') {
+			width: 100%;
+		}
+	}
+	@include media('>tablet') {
+		&__header {
+			width: 100%;
+		}
+		&__primary {
+			width: 69%;
+		}
+		&__secondary {
+			width: 29%;
+		}
+		&__half {
+			width: 49%;
+		}
+		&__third {
+			width: 33.3%;
+		}
+	}
+	&__header {
+		@for $i from 1 through 6 {
+			h#{$i} {
+				margin: rem-calc(0 0 30);
+			}
+		}
+	}
+	&__primary {
+		&--push {
+			order: 2;
+		}
+	}
+	&__secondary {
+		&--pull {
+			order: 1;
+		}
+		> div {
+			&:not(:last-of-type) {
+				margin: rem-calc(0 0 30);
+			}
+		}
+	}
+}
+
+.hidden {
+	&--mobile {
+		@include media('<tablet') {
+			display: none;
+		}
+		display: block;
+	}
+	&--tablet {
+		@include media('>=tablet', '<=desktop') {
+			display: none;
+		}
+		display: block;
+	}
+	&--desktop {
+		@include media('>=desktop', '<=largedesktop') {
+			display: none;
+		}
+		display: block;
+	}
+	&--largedesktop {
+		@include media('>=largedesktop') {
+			display: none;
+		}
+		display: block;
+	}
+}
+
+.aliss-descriptive-icon {
+	position: absolute;
+	top: rem-calc(20);
+	right: rem-calc(20);
+	i {
+		color: map-get($brand, aliss-dark-blue);
+		font-size: rem-calc(30);
+	}
+}
+
+.aliss-content__header {
+	h1 {
+		span {
+			color: map-get($brand, aliss-dark-blue);
+		}
+	}
+}
+
+#srch {
+	.error {
+		padding: rem-calc(10);
+		margin: rem-calc(20 0 0);
+		background: map-get($brand, aliss-dark-red);
+		color: $white;
+		p {
+			text-align: left;
+		}
+	}
+}

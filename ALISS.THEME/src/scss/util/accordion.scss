@@ -1,0 +1,41 @@
+/** @format */
+
+.accordion {
+	margin: rem-calc(0 0 5);
+	&.js-accordion-toggle-active {
+		.accordion__toggle {
+			display: block;
+			p {
+				&::after {
+					content: '\f077';
+				}
+			}
+		}
+		.accordion__list {
+			display: block;
+		}
+	}
+	&__toggle {
+		p {
+			cursor: pointer;
+			position: relative;
+			max-width: max-content;
+			strong {
+				cursor: default;
+			}
+			&::after {
+				content: '\f078';
+				color: map-get($brand, aliss-dark-blue);
+				font-family: 'FontAwesome';
+				font-size: rem-calc(16);
+				position: absolute;
+				top: 0;
+				right: rem-calc(-20);
+			}
+		}
+	}
+	&__list {
+		display: none;
+		margin: rem-calc(15 0);
+	}
+}

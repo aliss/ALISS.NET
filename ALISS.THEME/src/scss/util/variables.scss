@@ -1,0 +1,53 @@
+/** @format */
+
+//Breakpoints
+//http://include-media.com/
+$breakpoints: (
+	phone: 375px,
+	tablet: 768px,
+	desktop: 1024px,
+	largedesktop: 1280px,
+);
+
+// ALISS brand colours
+$brand: (
+	aliss-blue: #1E7ABD,
+	aliss-dark-blue: #004785,
+	aliss-light-green: #27C900,
+	aliss-dark-red: #a01b19,
+	aliss-light-red: #BE221F,
+	aliss-light-teal: #2EEEE3,
+	aliss-light-gray: #EDEDED,
+	aliss-dark-gray: #4C5C68,
+);
+
+// Social networking colours
+$social: (
+	facebook: #39588a,
+	twitter: #559cc9,
+	google: #d05044,
+);
+
+// Default colours
+$black: #000;
+$white: #fff;
+
+// Generic colour pallete
+$colours: (
+	light-gray: #ccc,
+	medium-gray: #999,
+	dark-gray: #666,
+	faded-black: #212121,
+);
+
+// Asset paths
+$body-font-url: '../fonts';
+$aliss-imgs: '../img';
+
+// Global
+$body-background: $white;
+$global-width: rem-calc(1240);
+$global-margin: 1rem;
+$global-padding: 1rem;
+$global-lineheight: 1.4;
+$body-font-color: $black;

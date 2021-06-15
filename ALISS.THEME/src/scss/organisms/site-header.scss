@@ -1,0 +1,148 @@
+/** @format */
+
+.aliss-header {
+	background: map-get($brand, aliss-blue);
+	padding: rem-calc(55 0 15);
+	@include media('>=desktop') {
+		padding: rem-calc(15 0);
+	}
+	a,
+	p,
+	li {
+		color: $white;
+	}
+	a {
+		text-decoration: none;
+	}
+	&-component {
+		@include media('>desktop') {
+			display: flex;
+		}
+		&__logo {
+			@include media('>desktop') {
+				flex: 0 1 auto;
+				width: 30%;
+			}
+			a {
+				display: block;
+				max-width: max-content;
+			}
+			img {
+				width: rem-calc(70);
+				@include media('>desktop') {
+					width: rem-calc(100);
+				}
+			}
+		}
+		&__navigation {
+			position: relative;
+			@include media('<largedesktop') {
+				display: none;
+			}
+			&.js-mobile-menu-active {
+				display: block;
+			}
+			@include media('>desktop') {
+				flex: 0 1 auto;
+				width: 70%;
+			}
+			ul {
+				margin: rem-calc(0);
+				padding: 0;
+				@include media('>desktop') {
+					display: flex;
+					flex-direction: row;
+					justify-content: flex-end;
+				}
+				li {
+					@include media('<largedesktop') {
+						padding: rem-calc(0);
+						&:not(:last-of-type) {
+							margin: rem-calc(0 0 15 0);
+						}
+					}
+					@include media('>desktop') {
+						flex: 0 1 auto;
+					}
+					list-style: none;
+					margin: rem-calc(15 0 0);
+					a {
+						padding: rem-calc(15 0);
+						@include media('>desktop') {
+							padding: rem-calc(15);
+						}
+						transition: 0.5s all ease;
+					}
+				}
+			}
+			&__primary {
+				position: relative;
+				@include media('>=desktop') {
+					top: rem-calc(60);
+				}
+				ul {
+					@include media('<=desktop') {
+						margin: rem-calc(30 0 15);
+					}
+				}
+				&__item {
+					&--active-page {
+						a {
+							color: map-get($brand, quris);
+						}
+					}
+					a {
+						position: relative;
+						top: 0;
+						// &:hover {
+						// 	top: rem-calc(-5);
+						// 	color: map-get($brand, quris);
+						// }
+					}
+				}
+			}
+			&__secondary {
+				position: absolute;
+				top: rem-calc(-15);
+				right: 0;
+				display: none;
+				@include media('>=desktop') {
+					display: block;
+				}
+			}
+		}
+		&-tertiary-menu {
+			position: absolute;
+			top: rem-calc(60);
+			right: rem-calc(15);
+			.navigation-toggle {
+				text-align: right;
+				@include media('>desktop') {
+					display: none;
+				}
+			}
+		}
+	}
+	.a {
+		&-feedback {
+			@include media('>=tablet') {
+				position: absolute;
+				top: 0;
+				right: 0;
+			}
+			@include media('>=largedesktop') {
+				position: relative;
+				top: -15px;
+			}
+			&--mobile {
+				@include media('<desktop') {
+					position: absolute;
+					top: 0;
+					left: 0;
+					right: 0;
+					width: 100%;
+				}
+			}
+		}
+	}
+}

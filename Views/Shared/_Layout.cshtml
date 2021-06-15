@@ -1,0 +1,108 @@
+﻿@{ 
+    var APIKEY = "AIzaSyBrJUCSxvzuEMClAO5vyCFs9J0grZrXG_Q";
+    var TWITTERHANDLE = "@alissprogramme";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    @RenderSection("metadata", false)
+    <meta name="author" content="ALISS">
+    <meta property="og:locale" content="en_GB">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="ALISS">
+    <meta name="twitter:site" content="@TWITTERHANDLE">
+    <meta property="og:image" content="https://www.aliss.org/static/img/promo-img.6e778acb484a.png">
+    <meta property="og:image:secure_url" content="https://www.aliss.org/static/img/promo-img.6e778acb484a.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://www.aliss.org/static/img/promo-img.6e778acb484a.png">
+    <!-- Meta: Device Optimization -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="stylesheet" type="text/css" href="~/ALISS.THEME/dist/css/site.min.css" />
+    <!-- Awesome Font -->
+    <script src="https://kit.fontawesome.com/7264da0bdc.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.typekit.net/hwk2ezh.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="">
+    <link rel="shortcut icon" href="~/ALISS.THEME/dist/img/favicon.png" type="image/x-icon">
+    <script src="https://maps.googleapis.com/maps/api/js?key=@APIKEY&libraries=places&v=weekly" defer></script>
+    <style>
+
+        body {
+            background: #fff;
+            color: #212121;
+            font-family: sofia-pro,sans-serif;
+            font-weight: 400;
+            font-style: normal;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0
+        }
+
+        img {
+            display: inline-block;
+            height: auto;
+            -ms-interpolation-mode: bicubic;
+            max-width: 100%;
+            vertical-align: middle
+        }
+
+        .acc-skip-link {
+            left: -9999px;
+            left: -624.9375rem;
+            padding: .5rem;
+            position: absolute
+        }
+
+            .acc-skip-link:active, .acc-skip-link:focus {
+                left: 16px;
+                left: 1rem;
+                top: 16px;
+                top: 1rem;
+                z-index: 2
+            }
+
+            .acc-skip-link:focus {
+                background-color: #ffeb3b;
+                -webkit-box-shadow: 0 -.125rem #ffeb3b,0 .25rem #212b32;
+                box-shadow: 0 -.125rem #ffeb3b,0 .25rem #212b32;
+                color: #212b32;
+                outline: 4px solid transparent;
+                outline: .25rem solid transparent;
+                text-decoration: none
+            }
+    </style>
+</head>
+
+<body id="aliss-x-page" class="aliss-x-page">
+
+    @* Accessibility Skip Link *@
+    <a title="Click here to be taken to the main content of this page." class="acc-skip-link" href="#primarycontent">
+        Skip to main content
+    </a>
+    @* Accessibility Skip Link *@
+
+    @* Website header *@
+    @Html.Partial("siteHeader")
+    @* Website header *@
+
+    @* Website contents *@
+    <div id="primarycontent">
+        @RenderBody()
+    </div>
+    @* Website contents *@
+
+    @* Website footer *@
+    @Html.Partial("siteFooter")
+    @* Website footer *@
+
+    @* Website scripts *@
+        <script src="~/ALISS.THEME/dist/js/site.min.js"></script>
+    @* Website scripts *@
+
+</body>
+
+</html>

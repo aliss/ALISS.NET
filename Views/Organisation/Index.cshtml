@@ -1,0 +1,429 @@
+﻿@model ALISS.Services.ViewModels.Organisation.OrganisationModel
+
+@section metadata {
+    <title>ALISS | @Model.name - Organisation.</title>
+
+    @if (!string.IsNullOrEmpty(Model.description) && Model.description.Length > 160)
+    {
+        <meta name="description" content="@Model.description.Substring(0, 160)">
+    }
+    else if (!string.IsNullOrEmpty(Model.description))
+    {
+        <meta name="description" content="@Model.description">
+    }
+    else
+    {
+        <meta name="description" content="Information and details regarding the '@Model.name' organisation on ALISS.">
+    }
+
+    <meta property="og:title" content="ALISS | @Model.name - Organisation.">
+
+    @if (!string.IsNullOrEmpty(Model.description) && Model.description.Length > 160)
+    {
+        <meta property="og:description" content="@Model.description.Substring(0, 160).">
+    }
+    else if (!string.IsNullOrEmpty(Model.description))
+    {
+        <meta property="og:description" content="@Model.description">
+    }
+    else
+    {
+        <meta property="og:description" content="Information and details regarding the '@Model.name' organisation on ALISS.">
+    }
+
+    <meta name="twitter:title" content="ALISS | @Model.name - Organisation.">
+
+    @if (!string.IsNullOrEmpty(Model.description) && Model.description.Length > 160)
+    {
+        <meta name="twitter:description" content="@Model.description.Substring(0, 160).">
+    }
+    else if (!string.IsNullOrEmpty(Model.description))
+    {
+        <meta name="twitter:description" content="@Model.description">
+    }
+    else
+    {
+        <meta name="twitter:description" content="Information and details regarding the '@Model.name' organisation on ALISS.">
+    }
+}
+
+@{
+    // Organisation
+    var org_id = Model.id;
+    var org_url = Model.alissUrl;
+    var org_perma_url = Model.permalink;
+    var org_slug = Model.slug;
+    var org_name = Model.name;
+    var org_description = Model.description;
+    var org_last_edited = Model.last_edited.ToString();
+    var org_claim_status = Model.is_claimed;
+
+    var org_website = Model.url.ToString();
+    var org_email = Model.email.ToString();
+    var org_phone = Model.phone.ToString();
+    var org_facebook = Model.facebook.ToString();
+    var org_twitter = Model.twitter.ToString();
+
+    var org_has_services = Model.services;
+    var org_has_locations = Model.locations;
+
+    // Organisation services
+}
+
+<main id="aliss-organisation-@org_id" class="aliss-organisation-page aliss-organisation-page--@org_id">
+    <section>
+        <div class="aliss-grid">
+            <div class="aliss-content__wrap">
+
+                @* Organisatin - Page title *@
+                <div class="aliss-content__header">
+                    <h1>@org_name</h1>
+                </div>
+                @* Organisatin - Page title *@
+
+                @* ALISS Grid primary content *@
+                <div class="aliss-content__primary">
+
+                    @* Organisation - No service(s) warning component *@
+                    @if (org_has_services == null)
+                    {
+                        <div class="aliss-organism aliss-component-master aliss-content-spacer aliss-component-master--red">
+                            <div class="aliss-component-master__contents">
+                                <h2>
+                                    Notice: No services have been added to this organisation
+                                </h2>
+                                <p>
+                                    This organisation will not be visible to the public on ALISS until at least one service has been added. To add a service use the button below or the button within the <a href='#actions'>actions panel</a>.
+                                </p>
+                            </div>
+                            <div class="aliss-component-master__contents aliss-component-master__contents--claim-organisation">
+                                <div class="aliss-component-master__buttons">
+                                    <a id="" href="https://www.aliss.org/account/login/" title="Click here to be taken back to the live ALISS site (This will open in a new window)."
+                                       target="_blank" class="btn btn btn--warning">
+                                        Add a service
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @* Organisation - No service(s) warning component *@
+
+                    @* Organisation claim status and last editied date components *@
+                    <div class="aliss-component-master aliss-component-descriptive-blocks">
+                        <div class="aliss-organism aliss-component-master aliss-content-spacer">
+                            <div class="aliss-component-master__contents">
+                                <h2>
+                                    Claim status:
+                                </h2>
+                                <p>
+                                    @if (org_claim_status == true)
+                                    {
+                                        @:Claimed
+                                    }
+                                    else if (org_claim_status == false)
+                                    {
+                                        @:Unclaimed
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        <div class="aliss-organism aliss-component-master aliss-content-spacer">
+                            <div class="aliss-component-master__contents">
+                                <h2>
+                                    Last updated:
+                                </h2>
+                                <p>
+                                    @if (!string.IsNullOrEmpty(org_last_edited))
+                                    {
+                                        <span>
+                                            @org_last_edited
+                                        </span>
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    @* Organisation claim status and last editied date components *@
+
+
+                    @* Organisation description *@
+                    @if (!string.IsNullOrEmpty(Model.description))
+                    {
+                        <div class="aliss-rte aliss-typography">
+                            <h2>About @Model.name</h2>
+                            <p>@org_description</p>
+                        </div>
+                    }
+                    @* Organisation description *@
+
+                    @* Organisation - No claimant component *@
+
+                    @if (org_claim_status != true)
+                    {
+                        <div class="aliss-organism aliss-component-master aliss-content-spacer">
+                            <div class="aliss-descriptive-icon">
+                                <span class="tool" data-tip="This organisation has not been claimed by a representative.">
+                                    <i class="far fa-question-circle"></i>
+                                </span>
+                            </div>
+                            <div class="aliss-component-master__contents">
+                                <h2>
+                                    Do you represent this organisation?
+                                </h2>
+                                <p>
+                                    This organisation has not been claimed by one of it's representatives. If you represent this organisation and wish to make changes to this listing, please use the button below to start the process.
+                                </p>
+                            </div>
+                            <div class="aliss-component-master__contents aliss-component-master__contents--claim-organisation">
+                                <div class="aliss-component-master__buttons">
+                                    <a id="" href="https://www.aliss.org/account/login/" title="Click here to be taken back to the live ALISS site (This will open in a new window)."
+                                       target="_blank" class="btn btn btn--primary">
+                                        Claim this organisation
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @* Organisation - No claimant component *@
+
+                    @* Associated services *@
+                    @if (org_has_services != null)
+                    {
+                        foreach (var org_has_service in org_has_services)
+                        {
+                            <div class="aliss-organism aliss-component-master aliss-content-spacer">
+                                <div class="aliss-component-master__contents">
+                                    <h2>
+                                        @org_has_service.name
+                                    </h2>
+                                    <p>
+                                        <strong>By:</strong> <span>@org_name</span>.
+                                    </p>
+
+                                    @* Organisation - If has categories *@
+                                    @if (org_has_service.categories != null)
+                                    {
+                                        <p>
+                                            <strong>Category:</strong>
+                                            @{
+                                                var categories = 1;
+                                            }
+                                            @foreach (var service_category in org_has_service.categories)
+                                            {
+                                                var categories_count = org_has_service.categories.Count();
+                                                var categories_split = categories == categories_count ? "." : ", ";
+                                                <span>
+                                                    @service_category.name@categories_split
+                                                </span>
+                                                categories++;
+                                            }
+                                        </p>
+                                    }
+                                    @* Organisation - If has categories *@
+
+                                    @* Organisation - If has services *@
+                                    @if (org_has_service.serviceAreas != null)
+                                    {
+                                        <div class="accordion aliss-component-master__locations">
+                                            <div class="accordion__toggle">
+                                                <p><strong>Service area(s):</strong> View all</p>
+                                            </div>
+                                            <div class="accordion__list">
+                                                <ul class="aliss-icon-list">
+                                                    @foreach (var service_areas in org_has_service.serviceAreas)
+                                                    {
+                                                        <li class="aliss-icon-list__item aliss-icon-list__item--map">
+                                                            @service_areas.name
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    }
+                                    @* Organisation - If has services *@
+
+                                    @* Organisation - If has description/contents *@
+                                    <p>
+                                        @if (org_has_service.description.Length >= 200)
+                                        {
+                                            @org_has_service.description.Substring(0, 200)@:...
+                                        }
+                                        else
+                                        {
+                                            @org_has_service.description
+
+                                        }
+                                    </p>
+                                    @* Organisation - If has description/contents *@
+
+                                    @* Organisation - If has primary link *@
+                                    <a id="aliss-search-reults-service-link-@org_has_service.id" href="/service/index/@org_has_service.id" title="Click here for more information about the '@org_has_service.name' service." target="_self" class="aliss-component-master__contents__primary-link">
+                                        Learn more about @org_has_service.name
+                                    </a>
+                                    @* Organisation - If has primary link *@
+
+                                </div>
+
+                                @* Organisation - If has contact details *@
+                                @if (!string.IsNullOrEmpty(org_has_service.url) || !string.IsNullOrEmpty(org_has_service.phone) || !string.IsNullOrEmpty(org_has_service.email))
+                                {
+
+                                    <div class="aliss-component-master__links">
+                                        <ul class="aliss-icon-list aliss-icon-list--50-50">
+                                            @if (!string.IsNullOrEmpty(org_has_service.url))
+                                            {
+                                                <li class="aliss-icon-list__item aliss-icon-list__item--website">
+                                                    <a id="aliss-org-website-@org_has_service.id" href="@org_has_service.url" title="Click here to visit this organisations work (This will open in a new window)." target="_blank" class="">
+                                                        Visit the website
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            @if (!string.IsNullOrEmpty(org_has_service.phone))
+                                            {
+                                                <li class="aliss-icon-list__item aliss-icon-list__item--telephone">
+                                                    <a id="aliss-org-phone-@org_has_service.id" href="tel:@org_phone" title="Click here to call this organisation (This will open in a new window)." target="_blank" class="">
+                                                        @org_phone
+                                                    </a>
+                                                </li>
+                                            }
+
+                                            @if (!string.IsNullOrEmpty(org_has_service.email))
+                                            {
+                                                <li class="aliss-icon-list__item aliss-icon-list__item--email">
+                                                    <a id="aliss-org-email-@org_has_service.id" href="mailto:@org_email" title="Click here to email this organisation (This will open your email client)." target="_self" class="">
+                                                        @org_email
+                                                    </a>
+                                                </li>
+                                            }
+                                            @*<li class="aliss-icon-list__item aliss-icon-list__item--location">
+                                                    <a id="aliss-org-nearest-location-@org_has_service.id" href="@org_facebook" title="Click here to...." target="_blank" class="">
+                                                        Nearest location
+                                                    </a>
+                                                </li>*@
+                                        </ul>
+                                    </div>
+                                }
+                                @* Organisation - If has contact details *@
+                            </div>
+                        }
+                    }
+                    @* Organisation - associated services *@
+
+                </div>
+                @* ALISS Grid primary content *@
+
+                @* ALISS Grid secondary content *@
+                <div class="aliss-content__secondary">
+
+                    @* Organisation - Can you improve this listing component *@
+                    @Html.Partial("components/aliss_component_improve_this_listing")
+                    @* Organisation - Can you improve this listing component *@
+
+                    @* Organisation - Contact details component *@
+                    <div class="aliss-organism aliss-component-master aliss-content-spacer">
+                        <div class="aliss-component-master__contents">
+                            <h2>
+                                Contact information
+                            </h2>
+                            <p>You can use the information below to get in touch with this organisation.</p>
+                        </div>
+                        <div class="aliss-component-master__links">
+                            <ul class="aliss-icon-list aliss-icon-list--100">
+                                @if (!string.IsNullOrEmpty(org_website))
+                                {
+                                    <li class="aliss-icon-list__item aliss-icon-list__item--website">
+                                        <a id="organisation-contact-website-@org_id" href="@org_website" title="Click here to visit this organisations website (This will open in a new window)." target="_blank" class="classes">
+                                            Visit the website
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (!string.IsNullOrEmpty(org_phone))
+                                {
+                                    <li class="aliss-icon-list__item aliss-icon-list__item--telephone">
+                                        <a id="organisation-contact-phone-@org_id" href="/" title="Click here to call this organisations (This will open in a new window)." target="_blank" class="classes">
+                                            @org_phone
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (!string.IsNullOrEmpty(org_email))
+                                {
+                                    <li class="aliss-icon-list__item aliss-icon-list__item--email">
+                                        <a id="organisation-contact-email-@org_id" href="/" title="Click here to email this organisations (This will open in a new window)." target="_blank" class="classes">
+                                            @org_email
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (!string.IsNullOrEmpty(org_facebook))
+                                {
+                                    <li class="aliss-icon-list__item aliss-icon-list__item--facebook">
+                                        <a id="organisation-contact-facebook-@org_id" href="@org_facebook" title="Click here to visit this organisations Facebook profile (This will open in a new window)." target="_blank" class="">
+                                            Find us on Facebook
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (!string.IsNullOrEmpty(org_twitter))
+                                {
+                                    <li class="aliss-icon-list__item aliss-icon-list__item--twitter">
+                                        <a id="organisation-contact-twitter-@org_id" href="@org_twitter" title="Click here to visit this organisations Twitter profile (This will open in a new window)." target="_blank" class="">
+                                            Find us on Twitter
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    @* Organisation - Contact details component *@
+
+
+                    @* Organisation - User actions component *@
+                    @*<div class="aliss-organism aliss-component-master aliss-content-spacer">
+                        <div class="aliss-component-master__contents">
+                            <h2>
+                                Actions
+                            </h2>
+                            <p>
+                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy.
+                            </p>
+                        </div>
+                        <div class="aliss-component-master__links">
+                            <ul class="aliss-icon-list aliss-icon-list--100">
+                                <li class="aliss-icon-list__item aliss-icon-list__item--email">
+                                    <a id="" href="/" title="Click here to...." target="_self" class="classes">
+                                        Share this page via email
+                                    </a>
+                                </li>
+                                <li class="aliss-icon-list__item aliss-icon-list__item--print">
+                                    <a id="" href="/" title="Click here to...." target="_self" class="classes">
+                                        Print this page
+                                    </a>
+                                </li>
+                                <li class="aliss-icon-list__item aliss-icon-list__item--save">
+                                    <a id="" href="/" title="Click here to...." target="_self" class="classes">
+                                        Add this page to your saved searches
+                                    </a>
+                                </li>
+                                <li class="aliss-icon-list__item aliss-icon-list__item--share">
+                                    <a id="" href="/" title="Click here to...." target="_self" class="classes">
+                                        Recommend this service
+                                    </a>
+                                </li>
+                                <li class="aliss-icon-list__item aliss-icon-list__item--back-arrow">
+                                    <a id="" href="/" title="Click here to...." target="_self" class="classes">
+                                        Return to latest search results
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>*@
+                    @* Organisation - User actions component *@
+                </div>
+            </div>
+            @* ALISS Grid primary content *@
+        </div>
+        </div>
+    </section>
+</main>

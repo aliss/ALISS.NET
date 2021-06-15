@@ -1,0 +1,92 @@
+/** @format */
+
+.aliss-component-master {
+	position: relative;
+	a {
+		text-decoration: none;
+	}
+	&__contents {
+		p {
+			&:not(:last-of-type) {
+				margin: rem-calc(0 0 5);
+			}
+			margin: rem-calc(0);
+		}
+		&__primary-link {
+			display: inline-block;
+			margin: rem-calc(20 0 0);
+			@include aliss-a-hover();
+		}
+		&--claim-organisation {
+			margin: rem-calc(20 0 0);
+			h3,
+			p {
+				margin: rem-calc(0 0 20);
+			}
+		}
+	}
+	&__links {
+		margin: rem-calc(20 0 0);
+	}
+	&__buttons {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		@include media('>=tablet') {
+			flex-direction: row;
+		}
+		a {
+			flex: 0 1 100%;
+			@include media('>=tablet') {
+				flex: 0 1 auto;
+			}
+			&:not(:last-of-type) {
+				margin: rem-calc(0 0 15);
+				@include media('>=tablet') {
+					margin: rem-calc(0 15 0 0);
+				}
+			}
+		}
+	}
+	.aliss-icon-list {
+		&--50-50 {
+			display: flex;
+			flex-direction: column;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			@include media('>=tablet') {
+				flex-direction: row;
+			}
+			li {
+				flex: 0 1 auto;
+				@include media('<=tablet') {
+					width: 100%;
+				}
+				@include media('>tablet') {
+					width: 49%;
+				}
+				a {
+					word-break: break-all;
+				}
+			}
+		}
+	}
+
+	&--red {
+		color: $white;
+		background-color: map-get($brand, aliss-light-red);
+		a {
+			&:not(.btn) {
+				color: $white;
+			}
+		}
+	}
+}
+
+.js-component-error {
+	display: none;
+	&-active {
+		display: block;
+	}
+}

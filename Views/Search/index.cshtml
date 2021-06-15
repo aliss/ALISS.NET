@@ -1,0 +1,642 @@
+﻿@model ALISS.Services.ViewModels.Search.SearchViewModel
+
+@section metadata {
+    <!-- Meta: SEO -->
+    <title>ALISS | Local help and support information on ALISS.</title>
+    <meta name="description" content="Help and support search results for local services.">
+
+    <meta property="og:title" content="ALISS | Local help and support information on ALISS.">
+    <meta property="og:description" content="Help and support search results for local services.">
+
+    <meta name="twitter:title" content="ALISS | Local help and support information on ALISS.">
+    <meta name="twitter:description" content="Help and support search results for local services.">
+}
+
+
+@{
+    var results = Model.SearchModel;
+    var service_link_count = 0;
+
+    var url = "";
+
+
+    if (Model.Query != null)
+    {
+        url += "&Query=" + Model.Query;
+    }
+
+    if (Model.LocationType != null)
+    {
+        url += "&LocationType=" + Model.LocationType;
+    }
+
+    if (Model.Category != null)
+    {
+        url += "&Category=" + Model.Category;
+    }
+
+    if (Model.Radius > 0)
+    {
+        url += "&Radius=" + Model.Radius;
+    }
+    if (Model.CustomRadius > 0)
+    {
+        url += "&CustomRadius=" + Model.CustomRadius;
+    }
+}
+
+<div id="primarycontent">
+
+    <main>
+
+        <section>
+            <div class="aliss-grid">
+                <div class="aliss-content__wrap">
+
+                    @{
+                        if (results.count >= 1)
+                        {
+                            <div class="aliss-content__header">
+                                <h1><span>Help and support</span> in (<span>@Model.Postcode</span>)</h1>
+                            </div>
+
+                            @* ALISS Grid primary content *@
+                            <div class="aliss-content__primary aliss-content__primary--push">
+
+                                @* Results loop *@
+                                @foreach (var service in results.data)
+                                {
+                                    <div class="aliss-organism aliss-component-master aliss-content-spacer">
+                                        <div class="aliss-component-master__contents">
+                                            <h2>
+                                                @service.name
+                                            </h2>
+                                            <p>
+                                                <strong>By:</strong> <span>@service.organisation.name</span>.
+                                            </p>
+                                            @* Organisation - If has categories *@
+                                            @if (service.categories != null)
+                                            {
+                                                <p>
+                                                    <strong>Category:</strong>
+                                                    @{
+                                                        var categories = 1;
+                                                    }
+                                                    @foreach (var service_category in service.categories)
+                                                    {
+                                                        var categories_count = service.categories.Count();
+                                                        var categories_split = categories == categories_count ? "." : ", ";
+                                                        <span>
+                                                            @service_category.name@categories_split
+                                                        </span>
+                                                        categories++;
+                                                    }
+                                                </p>
+                                            }
+                                            <p>
+                                                @if (service.description.Length >= 200)
+                                                {
+                                                    @service.description.Substring(0, 200)@:...
+                                                }
+                                                else
+                                                {
+                                                    @service.description
+
+                                                }
+                                            </p>
+                                            <a id="aliss-search-reults-service-link-@service.id" href="/service/index/@service.id" title="Click here for more information about @service.name" target="_self" class="aliss-component-master__contents__primary-link">
+                                                Learn more about @service.name
+                                            </a>
+
+                                        </div>
+                                        @* Organisation - If has contact details *@
+                                        @if (!string.IsNullOrEmpty(service.url) || !string.IsNullOrEmpty(service.phone) || !string.IsNullOrEmpty(service.email))
+                                        {
+
+                                            <div class="aliss-component-master__links">
+                                                <ul class="aliss-icon-list aliss-icon-list--50-50">
+                                                    @if (!string.IsNullOrEmpty(service.url))
+                                                    {
+                                                        <li class="aliss-icon-list__item aliss-icon-list__item--website">
+                                                            <a id="" href="@service.url" title="Click here to visit this organisations work (This will open in a new window)." target="_blank" class="classes">
+                                                                Visit the website
+                                                            </a>
+                                                        </li>
+                                                    }
+
+                                                    @if (!string.IsNullOrEmpty(service.phone))
+                                                    {
+                                                        <li class="aliss-icon-list__item aliss-icon-list__item--telephone">
+                                                            <a id="" href="tel:@service.phone" title="Click here to call this organisation (This will open in a new window)." target="_blank" class="classes">
+                                                                @service.phone
+                                                            </a>
+                                                        </li>
+                                                    }
+
+                                                    @if (!string.IsNullOrEmpty(service.email))
+                                                    {
+                                                        <li class="aliss-icon-list__item aliss-icon-list__item--email">
+                                                            <a id="aliss-org-email" href="mailto:@service.email" title="Click here to email this organisation (This will open your email client)." target="_blank" class="classes">
+                                                                @service.email
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                    @*<li class="aliss-icon-list__item aliss-icon-list__item--location">
+                                                            <a id="" href="/" title="Click here to...." target="_blank" class="">
+                                                                Nearest location
+                                                            </a>
+                                                        </li>*@
+                                                </ul>
+                                            </div>
+                                        }
+                                        @* Organisation - If has contact details *@
+
+                                    </div>
+                                    service_link_count++;
+                                }
+
+
+                                @* Results loop *@
+
+                                @* PAG *@
+                                @if (Math.Ceiling((double)results.count / 10) > 1)
+                                {
+                                    var previous_page = Model.Page - 1;
+                                    var next_page = Model.Page + 1;
+
+                                    <div class="aliss-pagination-component">
+                                        <div class="aliss-pagination-component__wrapper">
+                                            <div class="aliss-pagination-component__wrapper__item">
+                                                <p>Showing page <span>@Model.Page</span> of <span>@Math.Ceiling((double)results.count / 10)</span></p>
+                                            </div>
+                                            <div class="aliss-pagination-component__wrapper__item">
+                                                <nav>
+                                                    <ol>
+                                                        @if (Model.Page != 1)
+                                                        {
+                                                            <li>
+                                                                <a id="" href="/search/index?page=@previous_page&postcode=@Model.Postcode@url" title="Click here to view the previous page of your search results." target="_self" class="aliss-pagination-previous">
+                                                                    Prev
+                                                                </a>
+                                                            </li>
+                                                        }
+                                                        @for (int i = 1; i <= Math.Ceiling((double)results.count / 10); i++)
+                                                        {
+                                                            if (Model.Page == i - 1)
+                                                            {
+                                                                <li>
+                                                                    <a id="aliss-pagination-active-page" href="/search/index?page=@i&postcode=@Model.Postcode@url" title="Click here to view page @i of your search results." target="_self" class="js-pagination-previous-page">
+                                                                        @i
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            else if (Model.Page == i)
+                                                            {
+                                                                <li>
+                                                                    <a id="aliss-pagination-active-page" href="/search/index?page=@i&postcode=@Model.Postcode@url" title="Click here to view page @i of your search results." target="_self" class="js-pagination-active-page">
+                                                                        @i
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            else if (Model.Page == i + 1)
+                                                            {
+                                                                <li>
+                                                                    <a id="aliss-pagination-active-page" href="/search/index?page=@i&postcode=@Model.Postcode@url" title="Click here to view page @i of your search results." target="_self" class="js-pagination-next-page">
+                                                                        @i
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                            else
+                                                            {
+                                                                <li class="js-pagination-hidden">
+                                                                    <a href="/search/index?page=@i&postcode=@Model.Postcode@url" title="Click here to view page @i of your search results." target="_self">
+                                                                        @i
+                                                                    </a>
+                                                                </li>
+                                                            }
+                                                        }
+                                                        @if (Model.Page != @Math.Ceiling((double)results.count / 10))
+                                                        {
+                                                            <li>
+                                                                <a id="" href="/search/index?page=@next_page&postcode=@Model.Postcode@url" title="Click here to view the previous page of your search results." target="_self" class="aliss-pagination-next">
+                                                                    Next
+                                                                </a>
+                                                            </li>
+                                                        }
+                                                    </ol>
+                                                </nav>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                @* PAG *@
+
+                            </div>
+                            @* ALISS Grid primary content *@
+
+                            @* ALISS Grid secondary content *@
+                            <div class="aliss-content__secondary aliss-content__secondary--pull">
+
+
+                                <div class="aliss-organism-search ">
+                                    <h2>Start a new search</h2>
+                                    <div class="aliss-organism-search__block">
+                                        <form id="search-results-search-form" class="aliss-search-form aliss-search-form--home" action="/search/index" method="get">
+                                            <fieldset>
+                                                <label for="search-home">Search by placename or postcode:</label>
+                                                <div>
+                                                    <input type="text" name="Postcode" id="search-results-search-form-input" onFocus="initialize()" placeholder="EG. Glasgow or G2 4AA..." value="">
+                                                    <button class="btn btn--primary" type="submit">Search</button>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+                                </div>
+
+
+                                <div class="aliss-component-spacer aliss-content-spacer">
+                                    <hr>
+                                </div>
+
+                                <div class="aliss-organism accordion aliss-component-search-filter">
+                                    <div class="accordion__toggle">
+                                        <p>Filter search results</p>
+                                    </div>
+                                    <div class="accordion__list">
+
+                                        <div id="previous-search" class="aliss-search-form-categories" style="display:none;">
+                                            <p>Selected category criteria:</p>
+                                            <p id="previous-search-value"></p>
+                                            <p id="reset-categories">Remove selected category</p>
+                                        </div>
+
+                                        <div id="search-category-primary" class="aliss-search-form-categories">
+                                            <label for="Category">Filter by category: </label>
+                                            <div>
+                                                <select id="search-category" class="search-category-primary">
+                                                    <option value="">Choose a primary category</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div id="search-category-secondary" class="category-wrap-secondary aliss-search-form-categories" style="display:none;">
+                                            <label for="CategoryS">Filter by a second category: </label>
+                                            <div>
+                                                <select id="search-categorys" class="search-category-secondary"></select>
+                                            </div>
+                                        </div>
+                                        <div id="search-category-tenary" style="display:none;">
+                                            <label for="CategoryT">Filter by a third category: </label>
+                                            <div>
+                                                <select id="search-categoryt" class="search-category-tenary aliss-search-form-categories"></select>
+                                            </div>
+                                        </div>
+                                        <form name="srch-filters" class="aliss-search-form aliss-search-form--home" action="/search/index?" method="get">
+                                            @* Form hidden postcode parameter *@
+                                            @Html.HiddenFor(m => Model.Postcode)
+                                            @* Form hidden postcode parameter *@
+
+                                            @* Form category filter(s) *@
+                                            <fieldset style="display:none;">
+                                                <input id="categoryfill" type="text" name="Category" value="">
+                                            </fieldset>
+                                            @* Form category filter(s) *@
+
+                                            @* Form keyword filter(s) *@
+                                            <fieldset data-form="search-keyword">
+                                                <label for="search-keyword">Filter by keyword: </label>
+                                                <input type="text" name="Query" id="search-keyword" placeholder="E.G. diabetes" value="@Model.Query">
+                                            </fieldset>
+                                            @* Form keyword filter(s) *@
+
+                                            @* Form location filter(s) *@
+                                            <fieldset class="aliss-component-search-filter__radio" data-form="search-loc-nat">
+                                                <legend>
+                                                    Filter by local or national:
+                                                </legend>
+                                                <div class="aliss-component-search-filter__radio__item">
+                                                    <label class="aliss-component-search-filter__radio__item__label" for="name">Show me all services.</label>
+                                                    <input class="aliss-component-search-filter__radio__item__input" type="radio" name="LocationType" id="LocationType1" value="" @(Model.LocationType == "" ? "checked" : "")>
+                                                </div>
+                                                <div class="aliss-component-search-filter__radio__item">
+                                                    <label class="aliss-component-search-filter__radio__item__label" for="name">Show me services that operate locally.</label>
+                                                    <input class="aliss-component-search-filter__radio__item__input" type="radio" name="LocationType" id="LocationType2" value="local" @(Model.LocationType == "local" ? "checked" : "")>
+                                                </div>
+                                                <div class="aliss-component-search-filter__radio__item">
+                                                    <label class="aliss-component-search-filter__radio__item__label" for="name">Show me services that operate nationally.</label>
+                                                    <input class="aliss-component-search-filter__radio__item__input" type="radio" name="LocationType" id="LocationType3" value="national" @(Model.LocationType == "national" ? "checked" : "")>
+                                                </div>
+                                            </fieldset>
+                                            @* Form location filter(s) *@
+
+                                            @* Form radius filter(s) *@
+                                            <fieldset class="aliss-component-search-filter__radio" data-form="search-loc-nat">
+                                                <legend>
+                                                    Show me services within a:
+                                                </legend>
+                                                <div class="aliss-component-search-filter__radio__item">
+                                                    <label class="aliss-component-search-filter__radio__item__label js-label" for="Radius">15 minute walk (1km/0.8mi).</label>
+                                                    <input class="aliss-component-search-filter__radio__item__input" type="radio" name="Radius" id="Radius1" value="1000" @(Model.Radius == 1000 ? "checked" : "")>
+                                                </div>
+                                                <div class="aliss-component-search-filter__radio__item">
+                                                    <label class="aliss-component-search-filter__radio__item__label" for="Radius">10 minute drive  (10km/6mi).</label>
+                                                    <input class="aliss-component-search-filter__radio__item__input" type="radio" name="Radius" id="Radius2" value="10000" @(Model.Radius == 10000 ? "checked" : "")>
+                                                </div>
+                                                <div class="aliss-component-search-filter__radio__item">
+                                                    <label class="aliss-component-search-filter__radio__item__label" for="Radius">30 minute drive  (30km/12mi).</label>
+                                                    <input class="aliss-component-search-filter__radio__item__input" type="radio" name="Radius" id="Radius3" value="30000" @(Model.Radius == 30000 ? "checked" : "")>
+                                                </div>
+                                                <div class="aliss-component-search-filter__radio__item">
+                                                    <label class="aliss-component-search-filter__radio__item__label" for="Radius">Custom Distance (<span id="custom-radius-input-value">00</span>)</label>
+                                                    <input class="aliss-component-search-filter__radio__item__input" type="radio" name="Radius" id="Radius4" value="0" @(Model.Radius == 0 ? "checked" : "")>
+                                                </div>
+                                                <div class="aliss-component-search-filter__radio__item">
+                                                    <input class="range-slider__range" id="custom-radius-input" type="range" min="1000" max="50000" value="@Model.CustomRadius" step="1000" aria-valuemin="1000" aria-valuemax="50000" aria-valuenow="@Model.CustomRadius" name="CustomRadius">
+                                                </div>
+                                            </fieldset>
+                                            @* Form radius filter(s) *@
+
+                                            @* Form submit *@
+                                            <fieldset>
+                                                <div>
+                                                    <button class="btn btn--primary btn--submit" type="submit">Apply filters</button>
+                                                </div>
+                                            </fieldset>
+                                            @* Form submit *@
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            @* ALISS Grid secondary content *@
+                        }
+                        else
+                        {
+                            <div class="aliss-content__header">
+                                <h1>Sorry, Aliss is not available in your postcode.</h1>
+                            </div>
+
+                            @* ALISS Grid primary content *@
+                            <div class="aliss-content__primary aliss-content__primary--push">
+                                <h2>There doesn't appear to be any services that match your search criteria.</h2>
+                                <p>We're always adding new services to ALISS but it seems like we may not have reached your area yet.</p>
+                                <p>Please try searching again with a different placname, address, postcode or search criteria.</p>
+                            </div>
+                            <div class="aliss-content__secondary aliss-content__secondary--pull">
+
+
+                                <div class="aliss-organism-search ">
+                                    <h2>Start a new search</h2>
+                                    <div class="aliss-organism-search__block">
+                                        <form id="search-results-search-form" class="aliss-search-form aliss-search-form--home" action="/search/index" method="get">
+                                            <fieldset>
+                                                <label for="search-home">Search by placename or postcode:</label>
+                                                <div>
+                                                    <input type="text" name="Postcode" id="search-results-search-form-input" onFocus="initialize()" placeholder="EG. Glasgow or G2 4AA..." value="">
+                                                    <button class="btn btn--primary" type="submit">Search</button>
+                                                </div>
+                                            </fieldset>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script>
+    "use strict";
+
+    //var radios = document.forms["srch-filters"].elements["myradio"];
+    //for (var i = 0, max = radios.length; i < max; i++) {
+    //    radios[i].onclick = function () {
+    //        alert(this.value);
+    //    }
+    //}
+
+    //function setSelectedIndex(s, valsearch) {
+
+    //    // Loop through all the items in drop down list
+
+    //    for (var i = 0; i < s.options.length; i++) {
+
+    //        if (s.options[i].value == valsearch) {
+
+    //            // Item is found. Set its property and exit
+
+    //            s.options[i].selected = true;
+    //            s.options[i].click();
+
+    //            break;
+
+    //        }
+
+    //    }
+
+    //    return;
+
+    //}
+
+
+    var selectElementP = document.querySelector('.search-category-primary');
+    var selectElementS = document.querySelector('.search-category-secondary');
+    var selectElementT = document.querySelector('.search-category-tenary');
+
+    function resetOnce(cookie) {
+        document.cookie = cookie + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+
+    var cookieValue = "";
+
+    //if (document.cookie.split(';').some((item) => item.trim().startsWith('category_one='))) {
+    //    cookieValue = document.cookie.split('; ').find(row => row.startsWith('category_one')).split('=')[1];
+    //    setTimeout(function () {
+    //        document.getElementById('search-category').style.display = 'none';
+    //        document.getElementById('previous-search').style.display = 'block';
+    //        document.getElementById('previous-search-value').innerHTML = cookieValue;
+    //        document.getElementById('categoryfill').value = cookieValue;
+    //        document.getElementById('categoryfill').innerHTML = cookieValue;
+    //    }, 1000);
+    //}
+
+    //if (document.cookie.split(';').some((item) => item.trim().startsWith('category_two='))) {
+    //    cookieValue = document.cookie.split('; ').find(row => row.startsWith('category_two')).split('=')[1];
+    //    setTimeout(function () {
+    //        document.getElementById('search-category').style.display = 'none';
+    //        document.getElementById('previous-search').style.display = 'block';
+    //        document.getElementById('previous-search-value').innerHTML = cookieValue;
+    //        document.getElementById('categoryfill').value = cookieValue;
+    //        document.getElementById('categoryfill').innerHTML = cookieValue;
+    //    }, 1000);
+    //}
+
+    //if (document.cookie.split(';').some((item) => item.trim().startsWith('category_three='))) {
+    //    cookieValue = document.cookie.split('; ').find(row => row.startsWith('category_three')).split('=')[1];
+    //    setTimeout(function () {
+    //        document.getElementById('search-category').style.display = 'none';
+    //        document.getElementById('previous-search').style.display = 'block';
+    //        document.getElementById('previous-search-value').innerHTML = cookieValue;
+    //        document.getElementById('categoryfill').value = cookieValue;
+    //        document.getElementById('categoryfill').innerHTML = cookieValue;
+    //    }, 1000);
+    //}
+
+    function setSelectedCategory(cookieName) {
+        if (document.cookie.split(';').some((item) => item.trim().startsWith(cookieName))) {
+            cookieValue = document.cookie.split('; ').find(row => row.startsWith(cookieName)).split('=')[1];
+            setTimeout(function () {
+                document.getElementById('search-category-primary').style.display = 'none';
+                document.getElementById('previous-search').style.display = 'block';
+                document.getElementById('previous-search-value').innerHTML = cookieValue;
+                document.getElementById('categoryfill').value = cookieValue;
+                document.getElementById('categoryfill').innerHTML = cookieValue;
+            }, 1000);
+        }
+    }
+
+    setSelectedCategory('category_one=');
+    setSelectedCategory('category_two=');
+    setSelectedCategory('category_three=');
+
+    if (document.querySelector('#reset-categories')) {
+        document.querySelector('#reset-categories').addEventListener('click', (event) => {
+            resetOnce("category_one");
+            resetOnce("category_two");
+            resetOnce("category_three");
+            document.getElementById('categoryfill').value = "";
+            document.getElementById('categoryfill').innerHTML = "";
+            document.getElementById('previous-search').style.display = 'none';
+            document.getElementById('search-category-primary').style.display = 'block';
+        });
+    }
+
+    if (document.querySelector('.search-category-primary')) {
+        document.querySelector('.search-category-primary').addEventListener('change', (event) => {
+            document.getElementById('categoryfill').value = document.querySelector('.search-category-primary').value;
+            document.getElementById('categoryfill').innerHTML = document.querySelector('.search-category-primary').value;
+
+            if (document.cookie.split(';').some((item) => item.trim().startsWith('category_one='))) {
+                resetOnce("category_one");
+                document.cookie = "category_one=" + document.querySelector('.search-category-primary').value;
+            } else {
+                document.cookie = "category_one=" + document.querySelector('.search-category-primary').value;
+            }
+
+            if (document.cookie.split(';').some((item) => item.trim().startsWith('category_two='))) {
+                resetOnce("category_two");
+            }
+            if (document.cookie.split(';').some((item) => item.trim().startsWith('category_three='))) {
+                resetOnce("category_three");
+            }
+        });
+    }
+
+    if (document.querySelector('.search-category-secondary')) {
+        document.querySelector('.search-category-secondary').addEventListener('change', (event) => {
+            document.getElementById('categoryfill').value = document.querySelector('.search-category-secondary').value;
+            document.getElementById('categoryfill').innerHTML = document.querySelector('.search-category-secondary').value;
+            document.cookie = "category_two=" + document.querySelector('.search-category-secondary').value;
+
+            if (document.cookie.split(';').some((item) => item.trim().startsWith('category_two='))) {
+                resetOnce("category_two");
+                document.cookie = "category_two=" + document.querySelector('.search-category-secondary').value;
+            } else {
+                document.cookie = "category_two=" + document.querySelector('.search-category-secondary').value;
+            }
+
+            if (document.cookie.split(';').some((item) => item.trim().startsWith('category_three='))) {
+                resetOnce("category_three");
+            }
+        });
+    }
+
+    if (document.querySelector('.search-category-tenary')) {
+        document.querySelector('.search-category-tenary').addEventListener('change', (event) => {
+            document.getElementById('categoryfill').value = document.querySelector('.search-category-tenary').value;
+            document.getElementById('categoryfill').innerHTML = document.querySelector('.search-category-tenary').value;
+
+            if (document.cookie.split(';').some((item) => item.trim().startsWith('category_three='))) {
+                resetOnce("category_three");
+                document.cookie = "category_three=" + document.querySelector('.search-category-tenary').value;
+            } else {
+                document.cookie = "category_three=" + document.querySelector('.search-category-tenary').value;
+            }
+        });
+    }
+
+
+
+
+    function initialize() {
+        var input = document.getElementById('search-results-search-form-input');
+        var options = {
+            'componentRestrictions': { country: 'gb' }
+        }
+        new google.maps.places.Autocomplete(input, options);
+    }
+
+    // On submit, check input and pass it on.
+    document.querySelector('#search-results-search-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const geocoder = new google.maps.Geocoder();
+        // Get input
+        var query = '';
+        query = document.getElementById('search-results-search-form-input').value;
+
+        var regExp = /(^|\s+)(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2})($|\s+))/gi;
+
+        if (regExp.test(query)) {
+            query = query.replace(/\s/g, '');
+            query = query.replace(/(?=.{3}$)/, ' ');
+            query = query.toUpperCase();
+            console.log(query);
+            document.querySelector('#search-results-search-form-input').value = query;
+            document.getElementById("search-results-search-form").submit();
+        } else {
+            // Convert into location
+            geocoder.geocode({
+                'address': query
+            }, (res, status) => {
+                if (status === window.google.maps.GeocoderStatus.OK) {
+
+                    var LONY = res[0].geometry.location.lng();
+                    LONY = LONY.toString();
+                    LONY = LONY.substring(0, LONY.length - 2);
+
+                    var LATY = res[0].geometry.location.lat();
+                    LATY = LATY.toString();
+                    LATY = LATY.substring(0, LATY.length - 2);
+
+                    if ((54.6332381 <= LATY && LATY <= 60.8607515) && (-8.650007200000005 <= LONY && LONY <= -0.7246751000000131)) {
+
+                        var request = new XMLHttpRequest();
+                        request.open('GET', 'https://api.postcodes.io/postcodes?lon=' + LONY + '&lat=' + LATY, true);
+
+                        request.onload = function () {
+                            if (request.status >= 200 && request.status < 400) {
+                                // Success!
+                                var data = JSON.parse(request.responseText);
+                                document.querySelector('#search-results-search-form-input').value = data.result[0].postcode;
+                                document.getElementById("search-results-search-form").submit();
+                            } else {
+                                alert('ERROR: Please try searching for a valid placename.');
+                            }
+                        };
+
+                        request.onerror = function () {
+                            // There was a connection error of some sort
+                            alert('ERROR: Please try searching for a valid placename.');
+                        };
+
+                        request.send();
+                    } else {
+                        alert('ERROR: Please try searching for a valid placename.')
+                    }
+                }
+            });
+        }
+    });
+</script>

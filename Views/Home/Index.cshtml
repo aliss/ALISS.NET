@@ -1,0 +1,141 @@
+﻿@section metadata {
+    <!-- Meta: SEO -->
+    <title>ALISS | A Local Information System for Scotland</title>
+    <meta name="description" content="ALISS (A Local Information System for Scotland) is a service to help you find help and support close to you when you need it most.">
+
+    <meta property="og:title" content="ALISS | A Local Information System for Scotland">
+    <meta property="og:description" content="ALISS (A Local Information System for Scotland) is a service to help you find help and support close to you when you need it most.">
+
+    <meta name="twitter:title" content="ALISS | A Local Information System for Scotland">
+    <meta name="twitter:description" content="ALISS (A Local Information System for Scotland) is a service to help you find help and support close to you when you need it most.">
+}
+
+<link href="~/Content/banner.css" rel="stylesheet" />
+
+
+
+@* Aliss homepage search comnponent *@
+<div>
+    <div class="govuk-phase-banner">
+        <p class="govuk-phase-banner__content">
+            <strong class="govuk-tagRed govuk-phase-banner__content__tagRed">
+                COVID-19
+            </strong>
+            <span class="govuk-phase-banner__text">
+                Due to the Coronavirus pandemic, some services may have different opening hours or may be closed temporarily. We recommend to contact the service directly ahead of attending to ensure it is open and to confirm any changes.
+            </span>
+        </p>
+    </div>
+    <div class="govuk-phase-banner">
+        <p class="govuk-phase-banner__content">
+            <strong class="govuk-tag govuk-phase-banner__content__tag">
+                BETA
+            </strong>
+            <span class="govuk-phase-banner__text">
+                This is a new version of our website - please click here for an <a href="/Help/index">overview</a> of what's included in this version (September 2020).
+            </span>
+        </p>
+    </div>
+    <div class="aliss-organism-homepage-search">
+        <div class="aliss-organism-homepage-search__block">
+            <h1><span>Connecting</span> you<br> to your <span>community</span>.</h1>
+            <p>Search for <span>services</span>, <span>groups</span> and <span>activities</span> in <span>Scotland</span> by entering a <span>postcode</span> or your <span>nearest town</span>.</p>
+            <form id="search-form-home" class="aliss-search-form aliss-search-form--home" action="/search/index" method="get">
+                <fieldset>
+                    <label for="search-home">Search by placename or postcode:</label>
+                    <div>
+                        <input type="text" name="Postcode" id="search-home" onFocus="initialize()" placeholder="EG. Glasgow or G2 4AA..." value="">
+                        <button class="btn btn--primary" type="submit">Search</button>
+                    </div>
+                    <div id="srch">
+
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="map" style="display: none;"><</div>
+@* Aliss homepage search comnponent *@
+
+<script>
+
+    "use strict";
+
+    function initialize() {
+        var input = document.getElementById('search-home');
+        var options = {
+            'componentRestrictions': { country: 'gb' }
+        }
+        new google.maps.places.Autocomplete(input, options);
+    }
+
+    // On submit, check input and pass it on.
+    document.querySelector('#search-form-home').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const geocoder = new google.maps.Geocoder();
+        // Get input
+        var query = '';
+        query = document.getElementById('search-home').value;
+
+        var regExp = /(^|\s+)(([gG][iI][rR] {0,}0[aA]{2})|((([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y]?[0-9][0-9]?)|(([a-pr-uwyzA-PR-UWYZ][0-9][a-hjkstuwA-HJKSTUW])|([a-pr-uwyzA-PR-UWYZ][a-hk-yA-HK-Y][0-9][abehmnprv-yABEHMNPRV-Y]))) {0,}[0-9][abd-hjlnp-uw-zABD-HJLNP-UW-Z]{2})($|\s+))/gi;
+
+        if (!query) {
+            document.getElementById("srch").innerHTML = "<div class='error'><h2>Error</h2><p>Please ensure you search by a address, placename or postcode.</p></div>";
+        } else {
+            document.getElementById("srch").innerHTML = "";
+            if (regExp.test(query)) {
+                query = query.replace(/\s/g, '');
+                query = query.replace(/(?=.{3}$)/, ' ');
+                query = query.toUpperCase();
+                console.log(query);
+                document.querySelector('#search-home').value = query;
+                document.getElementById("search-form-home").submit();
+            } else {
+                // Convert into location
+                geocoder.geocode({
+                    'address': query
+                }, (res, status) => {
+                    if (status === window.google.maps.GeocoderStatus.OK) {
+
+                        var LONY = res[0].geometry.location.lng();
+                        LONY = LONY.toString();
+                        LONY = LONY.substring(0, LONY.length - 2);
+
+                        var LATY = res[0].geometry.location.lat();
+                        LATY = LATY.toString();
+                        LATY = LATY.substring(0, LATY.length - 2);
+
+                        if ((54.6332381 <= LATY && LATY <= 60.8607515) && (-8.650007200000005 <= LONY && LONY <= -0.7246751000000131)) {
+
+                            var request = new XMLHttpRequest();
+                            request.open('GET', 'https://api.postcodes.io/postcodes?lon=' + LONY + '&lat=' + LATY, true);
+
+                            request.onload = function () {
+                                if (request.status >= 200 && request.status < 400) {
+                                    // Success!
+                                    var data = JSON.parse(request.responseText);
+                                    document.querySelector('#search-home').value = data.result[0].postcode;
+                                    document.getElementById("search-form-home").submit();
+                                } else {
+                                    alert('ERROR: Please try searching for a valid placename.');
+                                }
+                            };
+
+                            request.onerror = function () {
+                                // There was a connection error of some sort
+                                alert('ERROR: Please try searching for a valid placename.');
+                            };
+
+                            request.send();
+                        } else {
+                            alert('ERROR: Please try searching for a valid placename.')
+                        }
+                    }
+                });
+            }
+        }
+
+
+    });
+</script>

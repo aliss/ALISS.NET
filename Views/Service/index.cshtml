@@ -1,0 +1,382 @@
+﻿@model ALISS.Services.ViewModels.Service.ServiceModel
+
+@section metadata {
+    <!-- Meta: SEO -->
+    <title>ALISS | @Model.name - Service.</title>
+
+    @if (!string.IsNullOrEmpty(Model.description) && Model.description.Length > 160)
+    {
+        <meta name="description" content="@Model.description.Substring(0, 160)">
+    }
+    else if (!string.IsNullOrEmpty(Model.description))
+    {
+        <meta name="description" content="@Model.description">
+    }
+    else
+    {
+        <meta name="description" content="Information and details regarding the '@Model.name' service on ALISS.">
+    }
+
+    <meta property="og:title" content="ALISS | @Model.name - Service.">
+
+    @if (!string.IsNullOrEmpty(Model.description) && Model.description.Length > 160)
+    {
+        <meta property="og:description" content="@Model.description.Substring(0, 160).">
+    }
+    else if (!string.IsNullOrEmpty(Model.description))
+    {
+        <meta property="og:description" content="@Model.description">
+    }
+    else
+    {
+        <meta property="og:description" content="Information and details regarding the '@Model.name' service on ALISS.">
+    }
+
+    <meta name="twitter:title" content="ALISS | @Model.name - Service.">
+
+    @if (!string.IsNullOrEmpty(Model.description) && Model.description.Length > 160)
+    {
+        <meta name="twitter:description" content="@Model.description.Substring(0, 160).">
+    }
+    else if (!string.IsNullOrEmpty(Model.description))
+    {
+        <meta name="twitter:description" content="@Model.description">
+    }
+    else
+    {
+        <meta name="twitter:description" content="Information and details regarding the '@Model.name' service on ALISS.">
+    }
+
+}
+
+@{
+    // Service
+    var org_id = Model.id;
+    var org_url = Model.aliss_url;
+    var org_perma_url = Model.url;
+    var org_slug = Model.slug;
+    var org_name = Model.name;
+
+    var service_by_id = Model.organisation.id;
+    var service_by_name = Model.organisation.name;
+    var service_by_url = Model.organisation.aliss_url;
+
+    var org_website = Model.url.ToString();
+    var org_email = Model.email.ToString();
+    var org_phone = Model.phone.ToString();
+
+    var org_has_service_areas = Model.service_areas;
+    var org_has_locations = Model.locations;
+
+    // Organisation services
+
+    // Markers and locations counters
+    var marker_count = 0;
+    // Area names and geo locations counters
+    var geo_count = 0;
+
+}
+
+<main id="aliss-service-@org_id" class="aliss-service-page aliss-service-page--@org_id">
+    <section>
+        <div class="aliss-grid">
+            <div class="aliss-content__wrap">
+
+                @* Organisatin - Page title *@
+                <div class="aliss-content__header">
+                    <h1>@Model.name</h1>
+                </div>
+                @* Organisatin - Page title *@
+
+                @* ALISS Grid primary content *@
+                <div class="aliss-content__primary">
+
+                    @* Organisation claim status and last editied date components *@
+                    <div class="aliss-component-master aliss-component-descriptive-blocks">
+                        <div class="aliss-organism aliss-component-master aliss-content-spacer">
+                            <div class="aliss-component-master__contents">
+                                <h2>
+                                    Service by:
+                                </h2>
+                                <p>
+                                    @if (!string.IsNullOrEmpty(service_by_name) && (!string.IsNullOrEmpty(service_by_url)))
+                                    {
+                                        <a id="aliss-service-organisation-id-@service_by_id" href="/organisation/Index/@service_by_id" title="Click here for more information the organisation that represents this service." target="_self" class="aliss-service-by-link">
+                                            @service_by_name.
+                                        </a>
+                                    }
+                                    else if (!string.IsNullOrEmpty(service_by_name) && (string.IsNullOrEmpty(service_by_name)))
+                                    {
+                                        @service_by_name
+                                    }
+                                    else
+                                    {
+                                        @:Unavilable.
+                                    }
+                                </p>
+                            </div>
+                        </div>
+                        <div class="aliss-organism aliss-component-master aliss-content-spacer">
+                            <div class="aliss-component-master__contents">
+                                <h2>
+                                    Last updated:
+                                </h2>
+                                <p>
+                                    @Model.last_updated.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    @* Organisation claim status and last editied date components *@
+
+                    @* Organisation description *@
+                    @if (!string.IsNullOrEmpty(Model.description))
+                    {
+                        <div class="aliss-rte aliss-typography">
+                            <h2>About @Model.name</h2>
+                            <p>@Model.description</p>
+                        </div>
+                    }
+                    @* Organisation description *@
+
+                    @* Organisation description *@
+                    @if (org_has_locations.Count() >= 1 || org_has_service_areas.Count() >= 1)
+                    {
+
+                        <div id="aliss-component-map" class="aliss-component-map"
+                             data-id="@Model.id"
+
+                             @if (org_has_service_areas.Count() >= 1) { @: data-map-areas='{
+                                @:"areas" : [
+                                    foreach (var service_area in org_has_service_areas)
+                                    {
+                                        geo_count++;
+                                        var areas = geo_count == org_has_service_areas.Count() ? "}" : "},";
+                                        @:{
+                                            @:"type": "@service_area.type",
+                                            @:"code": "@service_area.code",
+                                            @:"area": "@service_area.name"
+                                        @areas
+
+                                    }
+                                @:]}'
+                             }
+                             @if (org_has_locations.Count() >= 1) { @: data-map-markers='{
+                                @:"markers" : [
+                                    foreach (var marker in org_has_locations)
+                                    {
+                                        marker_count++;
+                                        var markers = marker_count == org_has_locations.Count() ? "}" : "},";
+                                        @:{
+                                            @:"name": "@marker.name",
+                                            @:"address": "@marker.formatted_address",
+                                            @:"longitude": @marker.longitude,
+                                            @:"latitude": @marker.latitude
+                                        @markers
+                                    }
+                                @:]}'
+                             }>
+                        </div>
+                    }
+                    else if (org_has_locations.Count() < 1 || org_has_service_areas.Count() < 1)
+                    {
+                        <div class="aliss-organism aliss-component-master aliss-content-spacer aliss-component-master--red">
+                            <div class="aliss-component-master__contents">
+                                <h2>
+                                    Notice: This service has no locations or service areas currently applied.
+                                </h2>
+                            </div>
+                            <div class="aliss-component-master__contents aliss-component-master__contents--claim-organisation">
+                                <div class="aliss-component-master__buttons">
+                                    <a id="" href="/" title="Click here to...."
+                                       test-attribute=test-value
+                                       target="_self" class="btn btn btn--warning">
+                                        Add a service
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @* MAP ERROR *@
+                    <div id="aliss-component-map-error" class="aliss-organism aliss-component-master aliss-content-spacer aliss-component-master--red js-component-error">
+                        <div class="aliss-component-master__contents">
+                            <h2>
+                                Notice: This has been an error loading the map.
+                            </h2>
+                            <p id="aliss-component-map-error-contents"></p>
+                        </div>
+                    </div>
+                    @* MAP ERROR *@
+
+                    @if (org_has_locations.Count() >= 1)
+                    {
+                        <div class="aliss-component-location aliss-content-spacer">
+                            <div class="accordion">
+                                <div class="accordion__toggle">
+                                    <p><strong>Locations:</strong> View all ( @org_has_locations.Count() )</p>
+                                </div>
+                                <div class="accordion__list">
+                                    <ul class="aliss-icon-list">
+                                        @foreach (var locations in org_has_locations)
+                                        {
+                                            if (string.IsNullOrEmpty(locations.formatted_address))
+                                            {
+                                                var strings = locations.street_address;
+                                            }
+                                            else
+                                            {
+                                                var strings = locations.formatted_address;
+                                            }
+                                            <li class="aliss-icon-list__item aliss-icon-list__item--location">
+                                                <a id="aliss-service-location-@locations.id" href="https://maps.google.com?daddr=@locations.formatted_address" title="Click here view this location on Google Maps (This will open in a new window)." target="_blank" class="">
+                                                    @if (!string.IsNullOrEmpty(locations.formatted_address))
+                                                    {
+                                                        @locations.formatted_address
+                                                    }
+                                                </a>
+                                                @*<a id="" href="/" title="Click here for more information about X.." target="_self" class="link link--icon link--icon--edit">
+                                                        Edit service
+                                                    </a>
+                                                    <a id="" href="/" title="Click here for more information about X.." target="_self" class="link link--icon link--icon--remove">
+                                                        Remove service
+                                                    </a>*@
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @* Aliss map and locations component(s)  *@
+
+                    @* Aliss service areas component  *@
+                    @if (org_has_service_areas.Count() >= 1)
+                    {
+                        var service_area_count = 0;
+
+                        foreach (var serve_count in org_has_service_areas)
+                        {
+                            service_area_count++;
+                        }
+
+                        <div class="aliss-component-service-areas aliss-content-spacer">
+                            <div class="accordion">
+                                <div class="accordion__toggle">
+                                    <p><strong>Service area(s):</strong> View all ( @service_area_count )</p>
+                                </div>
+                                <div class="accordion__list">
+                                    <ul class="aliss-icon-list">
+                                        @foreach (var sercvice_areas in org_has_service_areas)
+                                        {
+                                            <li class="aliss-icon-list__item aliss-icon-list__item--map">
+                                                @sercvice_areas.name.
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @* Aliss service areas component  *@
+
+                </div>
+                @* ALISS Grid primary content *@
+
+                @* ALISS Grid secondary content *@
+                <div class="aliss-content__secondary">
+
+                    @* Organisation - Can you improve this listing component *@
+                    @Html.Partial("components/aliss_component_improve_this_listing")
+                    @* Organisation - Can you improve this listing component *@
+
+                    @* Organisation - Contact details component *@
+                    <div class="aliss-organism aliss-component-master aliss-content-spacer">
+                        <div class="aliss-component-master__contents">
+                            <h2>
+                                Contact information
+                            </h2>
+                            <p>You can use the information below to get in touch with this service.</p>
+                        </div>
+                        <div class="aliss-component-master__links">
+                            <ul class="aliss-icon-list aliss-icon-list--100">
+                                @if (!string.IsNullOrEmpty(org_website))
+                                {
+                                    <li class="aliss-icon-list__item aliss-icon-list__item--website">
+                                        <a id="aliss-org-website-@org_id" href="@org_website" title="Click here to visit this services website." target="_self" class="classes">
+                                            Visit the website
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (!string.IsNullOrEmpty(org_phone))
+                                {
+                                    <li class="aliss-icon-list__item aliss-icon-list__item--telephone">
+                                        <a id="aliss-org-phone-@org_id" href="tel:@org_phone" title="Click here to call this service (This will open in a new window)." target="_blank" class="classes">
+                                            @org_phone
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (!string.IsNullOrEmpty(org_email))
+                                {
+                                    <li class="aliss-icon-list__item aliss-icon-list__item--email">
+                                        <a id="aliss-org-email-@org_id" href="mailto:@org_email" title="Click here to email this service (This will open in a new window)." target="_blank" class="classes">
+                                            @org_email
+                                        </a>
+                                    </li>
+                                }
+
+                            </ul>
+                        </div>
+                    </div>
+                    @* Organisation - Contact details component *@
+
+
+                    @* Organisation - User actions component *@
+                    @*<div class="aliss-organism aliss-component-master aliss-content-spacer">
+                        <div class="aliss-component-master__contents">
+                            <h2>
+                                Actions
+                            </h2>
+                            <p>
+                                Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy.
+                            </p>
+                        </div>
+                        <div class="aliss-component-master__links">
+                            <ul class="aliss-icon-list aliss-icon-list--100">
+                                <li class="aliss-icon-list__item aliss-icon-list__item--email">
+                                    <a id="" href="/" title="Click here to...." target="_self" class="classes">
+                                        Share this page via email
+                                    </a>
+                                </li>
+                                <li class="aliss-icon-list__item aliss-icon-list__item--print">
+                                    <a id="" href="/" title="Click here to...." target="_self" class="classes">
+                                        Print this page
+                                    </a>
+                                </li>
+                                <li class="aliss-icon-list__item aliss-icon-list__item--save">
+                                    <a id="" href="/" title="Click here to...." target="_self" class="classes">
+                                        Add this page to your saved searches
+                                    </a>
+                                </li>
+                                <li class="aliss-icon-list__item aliss-icon-list__item--share">
+                                    <a id="" href="/" title="Click here to...." target="_self" class="classes">
+                                        Recommend this service
+                                    </a>
+                                </li>
+                                <li class="aliss-icon-list__item aliss-icon-list__item--back-arrow">
+                                    <a id="" href="/" title="Click here to...." target="_self" class="classes">
+                                        Return to latest search results
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>*@
+                    @* Organisation - User actions component *@
+                </div>
+            </div>
+            @* ALISS Grid primary content *@
+        </div>
+        </div>
+    </section>
+</main>

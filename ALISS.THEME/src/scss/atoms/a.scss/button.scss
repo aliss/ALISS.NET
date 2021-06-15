@@ -1,0 +1,53 @@
+/** @format */
+
+@mixin aliss-btn-hover($colour) {
+	background: map-get($brand, $colour);
+	color: $white;
+	&:hover {
+		background: darken(map-get($brand, $colour), 15%);
+	}
+}
+
+.btn {
+	display: inline-block;
+	width: auto;
+	padding: rem-calc(10 15);
+	text-align: center;
+	text-decoration: none;
+	transition: 0.5s all ease;
+	cursor: pointer;
+	&--primary {
+		@include aliss-btn-hover(aliss-dark-blue);
+	}
+	&--no,
+	&--yes {
+		padding: rem-calc(10 30);
+		&::before {
+			color: $white;
+			font-family: 'FontAwesome';
+			font-size: rem-calc(16);
+			position: relative;
+			left: rem-calc(-15);
+		}
+	}
+	&--warning,
+	&--no {
+		@include aliss-btn-hover(aliss-dark-red);
+	}
+	&--confirmation,
+	&--yes {
+		@include aliss-btn-hover(aliss-light-green);
+	}
+	&--no {
+		position: relative;
+		&::before {
+			content: '\f057';
+		}
+	}
+	&--yes {
+		position: relative;
+		&::before {
+			content: '\f058';
+		}
+	}
+}

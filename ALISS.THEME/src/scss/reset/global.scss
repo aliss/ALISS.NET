@@ -1,0 +1,65 @@
+@include normalize();
+
+html {
+  box-sizing: border-box;
+  font-size: 100%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+body {
+  background: $white;
+  color: map-get($colours, faded-black);
+  @include sofia-pro-regular(normal);
+  line-height: $global-lineheight;
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  display: inline-block;
+  height: auto;
+  -ms-interpolation-mode: bicubic;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+textarea {
+  height: auto;
+  min-height: rem-calc(150);
+}
+
+select {
+  box-sizing: border-box;
+  width: 100%;
+}
+
+fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  line-height: 1;
+  padding: 0;
+}
+
+pre {
+  overflow: auto;
+}
+
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+}
